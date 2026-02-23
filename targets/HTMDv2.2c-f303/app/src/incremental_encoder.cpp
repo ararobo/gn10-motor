@@ -16,7 +16,7 @@
 #include "tim.h"
 
 // 2π 定数 (M_PI は POSIX 拡張のため constexpr で定義)
-static constexpr float kTwoPi = 6.28318530f;
+static constexpr float TWO_PI = 6.28318530f;
 
 IncrementalEncoder::IncrementalEncoder(uint16_t max_count)
     : max_count_(max_count), enc_total_(0.0f) {}
@@ -33,7 +33,7 @@ int16_t IncrementalEncoder::read_and_reset_count() {
 }
 
 float IncrementalEncoder::count_to_rad(int16_t count) const {
-    return static_cast<float>(count) / static_cast<float>(max_count_) * kTwoPi;
+    return static_cast<float>(count) / static_cast<float>(max_count_) * TWO_PI;
 }
 
 float IncrementalEncoder::count_to_angular_velocity(int16_t count, float period_s) {
