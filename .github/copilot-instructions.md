@@ -29,7 +29,7 @@ Google C++ Style Guide 準拠
 | :--- | :--- | :--- |
 | クラス / 構造体 | PascalCase | `SpeedMsg`, `BatteryStatus` |
 | 関数 / 変数 | snake_case | `get_id()`, `target_velocity` |
-| 定数 / 列挙値 | kPascalCase / ALL_CAPS | `kMaxSpeed`, `BATTERY_LOW` |
+| 定数 / 列挙値 | ALL_CAPS | `BATTERY_LOW` |
 | プライベート変数 | 末尾にアンダースコア `_` | `speed_`, `voltage_` |
 
 ### 2.2 省略の許可と禁止
