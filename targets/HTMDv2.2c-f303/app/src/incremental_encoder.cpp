@@ -26,7 +26,8 @@ void IncrementalEncoder::hardware_init() {
 }
 
 int16_t IncrementalEncoder::read_and_reset_count() {
-    // カウンタ読み取りとリセットをアトミックに実施 (HAL レイヤー経由でなく直接アクセス)
+    // 読み取りとリセットの間に割り込みが入ると最大 1 ティックの誤差が生じる
+    // 許容誤差範囲内であるため対策しない
     uint16_t raw = TIM1->CNT;
     TIM1->CNT    = 0U;
     return static_cast<int16_t>(raw);

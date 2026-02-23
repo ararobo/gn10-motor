@@ -31,7 +31,7 @@ class IGateDriver {
 
     /**
      * @brief モーター出力を設定する
-     * @param output 出力値 (デューティ比、正負で回転方向を示す)
+     * @param output 正規化出力値 [-1.0, 1.0] (正: 正転, 負: 逆転)
      */
     virtual void output(float output) = 0;
 

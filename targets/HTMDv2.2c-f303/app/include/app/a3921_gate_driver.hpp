@@ -31,7 +31,8 @@ class A3921GateDriver : public gn10_motor::IGateDriver {
 
     /**
      * @brief モーター出力を設定する
-     * @param output デューティ値 (正: 正転, 負: 逆転, 絶対値 <= max_duty_)
+     * @param output 正規化デューティ値 [-1.0, 1.0] (正: 正転, 負: 逆転)
+     *               内部で max_duty_ にスケーリングする
      */
     void output(float output) override;
 

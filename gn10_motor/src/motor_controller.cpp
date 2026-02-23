@@ -94,7 +94,10 @@ void MotorController::update(float dt_s, uint8_t limit_switch_state) {
 
 void MotorController::stop() {
     driver_.output(0.0f);
-    reset();
+    // encoder_.reset() は呼ばない: 停止しても位置・速度情報は保持する
+    pid_.reset(feedback_value_);
+    accel_limiter_.reset(0.0f);
+    no_target_count_ = 0;
 }
 
 void MotorController::reset() {
@@ -176,14 +179,18 @@ float MotorController::apply_limit_switch(float duty, uint8_t limit_sw_state) co
     return duty;
 }
 
-float MotorController::compute_feedback(int16_t count, float dt_s) const {
+float MotorController::compute_feedback(int16_t count, float dt_s) {
     switch (config_.get_encoder_type()) {
         case gn10_can::devices::EncoderType::IncrementalSpeed:
             return encoder_.count_to_angular_velocity(count, dt_s);
 
         case gn10_can::devices::EncoderType::IncrementalTotal:
-        case gn10_can::devices::EncoderType::Absolute:
             return encoder_.accumulate_angle_rad(count);
+
+        // アブソリュートエンコーダは HTMDv2.2c では未対応のため出力を止める
+        case gn10_can::devices::EncoderType::Absolute:
+            driver_.output(0.0f);
+            return 0.0f;
 
         case gn10_can::devices::EncoderType::None:
         default:

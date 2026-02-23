@@ -122,8 +122,9 @@ class MotorController {
      * @param count read_and_reset_count() の戻り値
      * @param dt_s  制御周期 [s]
      * @return float フィードバック値 (速度 [rad/s] または 積算角度 [rad])
+     *               Absolute タイプは未対応のため 0.0f を返し出力を停止する
      */
-    float compute_feedback(int16_t count, float dt_s) const;
+    float compute_feedback(int16_t count, float dt_s);
 };
 
 }  // namespace gn10_motor
