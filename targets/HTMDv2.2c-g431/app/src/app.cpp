@@ -79,9 +79,6 @@ class App {
 
         // 制御タイマー (htim6) 割り込み開始
         HAL_TIM_Base_Start_IT(&htim6);
-
-        // LED4: 制御系電源投入後に常時点灯
-        HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
     }
 
     /** @brief メインループ (全処理は割り込み駆動のため空) */
@@ -140,6 +137,11 @@ class App {
         if (led1_count_ >= LED1_BLINK_CYCLES) {
             HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
             led1_count_ = 0;
+        }
+
+        // LED4は初期化後点灯
+        if (motor_->is_initialized()) {
+            HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
         }
 
         if (!motor_.has_value()) {
