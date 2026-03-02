@@ -4,10 +4,10 @@
  * @brief PID制御クラス
  * @version 0.1
  * @date 2026-02-20
- * 
+ *
  * @copyright Copyright (c) 2026 Gento Aiba
  * SPDX-License-Identifier: Apache-2.0
- * 
+ *
  */
 #pragma once
 
@@ -26,14 +26,16 @@ struct PIDConfig {
 };
 
 template <typename T>
-class PID {
+class PID
+{
     // テンプレート引数が浮動小数点型であることを保証する (C++17)
     static_assert(std::is_floating_point_v<T>, "PID class only supports floating point types.");
 
-  public:
+public:
     explicit PID(const PIDConfig<T>& config) : config_(config) {}
 
-    T update(T setpoint, T measurement, T dt) {
+    T update(T setpoint, T measurement, T dt)
+    {
         // dtが0以下の場合は計算をスキップ（ゼロ除算防止）
         if (dt <= T{0}) return T{0};
 
@@ -51,12 +53,12 @@ class PID {
         // 微分先行 (Derivative on Measurement)
         // Setpoint Kickを防ぐため、誤差(error)ではなく測定値(measurement)の微分を使用
         T derivative = (measurement - previous_measurement_) / dt;
-        
+
         // 変化量(derivative)が正のとき、抑制方向へ力を加えるため -Kd を掛ける
         T d_term = -config_.kd * derivative;
 
         T output = p_term + i_term + d_term;
-        
+
         // 前回の測定値を更新
         previous_measurement_ = measurement;
 
@@ -68,12 +70,14 @@ class PID {
      * @brief PID内部状態のリセット
      * @param current_measurement 現在の測定値（微分項のKick防止のため初期化に必要）
      */
-    void reset(T current_measurement = T{0}) {
+    void reset(T current_measurement = T{0})
+    {
         integral_             = T{0};
         previous_measurement_ = current_measurement;
     }
 
-    void set_config(const PIDConfig<T>& config) {
+    void set_config(const PIDConfig<T>& config)
+    {
         config_   = config;
         integral_ = T{0};
     }
@@ -82,13 +86,14 @@ class PID {
      * @brief 内部状態（積分項など）を維持したまま設定値を変更する
      * 実行中のゲイン変更などに使用。必要に応じて積分項を新しいリミットでクランプする。
      */
-    void update_config(const PIDConfig<T>& config) {
+    void update_config(const PIDConfig<T>& config)
+    {
         config_ = config;
         // 新しいリミットに合わせて積分項をクランプし直す
         integral_ = std::clamp(integral_, -config_.integral_limit, config_.integral_limit);
     }
 
-  private:
+private:
     PIDConfig<T> config_;
     T integral_             = T{0};
     T previous_measurement_ = T{0};

@@ -35,17 +35,18 @@ namespace gn10_motor {
  *
  * タイマー割り込み ： MotorController::update(dt_s, limit_switch_state)
  */
-class MotorController {
-  public:
+class MotorController
+{
+public:
     /**
      * @brief コンストラクタ
      * @param driver   ゲートドライバ実装への参照
      * @param encoder  エンコーダ実装への参照
      * @param can_server MotorDriverServer への参照
      */
-    MotorController(IGateDriver& driver,
-                    IEncoder& encoder,
-                    gn10_can::devices::MotorDriverServer& can_server);
+    MotorController(
+        IGateDriver& driver, IEncoder& encoder, gn10_can::devices::MotorDriverServer& can_server
+    );
 
     /**
      * @brief 制御ループを1ステップ実行する
@@ -78,15 +79,21 @@ class MotorController {
      * @brief CAN init パケット受信済みか否かを返す
      * @return true 初期化済み (制御動作中)
      */
-    bool is_initialized() const { return initialized_; }
+    bool is_initialized() const
+    {
+        return initialized_;
+    }
 
     /**
      * @brief 現在の目標値を返す (LED 制御などの UI 用途向け)
      * @return float 最後に受け取った目標値
      */
-    float get_target() const { return target_; }
+    float get_target() const
+    {
+        return target_;
+    }
 
-  private:
+private:
     // --- DI で注入されるハードウェア依存オブジェクト ---
     IGateDriver& driver_;
     IEncoder& encoder_;
@@ -99,7 +106,7 @@ class MotorController {
     // --- 状態 ---
     float target_;          ///< CAN から受け取った目標値
     float feedback_value_;  ///< エンコーダから計算したフィードバック値 [rad/s or rad]
-    bool initialized_;      ///< init パケット受信後に true になる
+    bool initialized_;  ///< init パケット受信後に true になる
 
     // --- 設定 ---
     gn10_can::devices::MotorConfig config_;

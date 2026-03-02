@@ -18,8 +18,9 @@
  *
  * htim2 (CH1/CH2) と PHASE/SR GPIO を使用してモーターを駆動する。
  */
-class A3921GateDriver : public gn10_motor::IGateDriver {
-  public:
+class A3921GateDriver : public gn10_motor::IGateDriver
+{
+public:
     /**
      * @brief コンストラクタ
      * @param max_duty PWMタイマーのオートリロード値 (= 最大デューティ)
@@ -42,6 +43,6 @@ class A3921GateDriver : public gn10_motor::IGateDriver {
      */
     void set_brake(bool brake) override;
 
-  private:
+private:
     uint16_t max_duty_;  ///< PWMタイマーの最大デューティ値
 };

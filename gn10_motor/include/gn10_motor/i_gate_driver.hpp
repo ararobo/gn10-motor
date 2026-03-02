@@ -20,8 +20,9 @@ namespace gn10_motor {
  * output() の引数はデューティ比の絶対値とし、符号で方向を示す。
  * 値域は具象クラスで定義された max_duty に依存する。
  */
-class IGateDriver {
-  public:
+class IGateDriver
+{
+public:
     virtual ~IGateDriver() = default;
 
     /**

@@ -19,6 +19,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  format:
+    name: Check Format
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install clang-format
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format
+
+    # CubeMX生成ファイル(Core/)とサブモジュール(external/)は除外する
+    - name: Check formatting
+      run: >
+        find gn10_motor targets/HTMDv2.2c-f303/app targets/HTMDv2.2c-g431/app
+        \( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \)
+        | xargs clang-format --dry-run --Werror
+
   build:
     name: Build ${{ matrix.target }}
     runs-on: ubuntu-22.04

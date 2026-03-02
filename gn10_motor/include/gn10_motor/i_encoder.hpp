@@ -22,8 +22,9 @@ namespace gn10_motor {
  * read_and_reset_count() はカウンタ読み取りと同時にリセットを行うため、
  * 呼び出し側は毎制御周期に1回だけ呼び出すこと。
  */
-class IEncoder {
-  public:
+class IEncoder
+{
+public:
     virtual ~IEncoder() = default;
 
     /**

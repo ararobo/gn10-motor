@@ -28,9 +28,9 @@ static constexpr float DEFAULT_INTEGRAL_LIMIT = 0.3f;
 
 // -----------------------------------------------------------------------
 
-MotorController::MotorController(IGateDriver& driver,
-                                 IEncoder& encoder,
-                                 gn10_can::devices::MotorDriverServer& can_server)
+MotorController::MotorController(
+    IGateDriver& driver, IEncoder& encoder, gn10_can::devices::MotorDriverServer& can_server
+)
     : driver_(driver),
       encoder_(encoder),
       can_server_(can_server),
@@ -39,13 +39,15 @@ MotorController::MotorController(IGateDriver& driver,
       target_(0.0f),
       feedback_value_(0.0f),
       initialized_(false),
-      no_target_count_(0) {
+      no_target_count_(0)
+{
     gains_.fill(0.0f);
 }
 
 // -----------------------------------------------------------------------
 
-void MotorController::update(float dt_s, uint8_t limit_switch_state) {
+void MotorController::update(float dt_s, uint8_t limit_switch_state)
+{
     // CAN受信を polling して設定・ゲイン・目標値を更新
     poll_can();
 
@@ -92,7 +94,8 @@ void MotorController::update(float dt_s, uint8_t limit_switch_state) {
     can_server_.send_feedback(feedback_value_, limit_switch_state);
 }
 
-void MotorController::stop() {
+void MotorController::stop()
+{
     driver_.output(0.0f);
     // encoder_.reset() は呼ばない: 停止しても位置・速度情報は保持する
     pid_.reset(feedback_value_);
@@ -100,7 +103,8 @@ void MotorController::stop() {
     no_target_count_ = 0;
 }
 
-void MotorController::reset() {
+void MotorController::reset()
+{
     pid_.reset(feedback_value_);
     accel_limiter_.reset(0.0f);
     encoder_.reset();
@@ -111,7 +115,8 @@ void MotorController::reset() {
 // 内部処理
 // -----------------------------------------------------------------------
 
-void MotorController::poll_can() {
+void MotorController::poll_can()
+{
     // 設定 (初期化パケット)
     if (gn10_can::devices::MotorConfig new_config; can_server_.get_new_init(new_config)) {
         config_ = new_config;
@@ -140,7 +145,8 @@ void MotorController::poll_can() {
     }
 }
 
-void MotorController::apply_config_to_controllers() {
+void MotorController::apply_config_to_controllers()
+{
     // GainType を配列インデックスに変換するローカルラムダ
     auto idx = [](gn10_can::devices::GainType type) { return static_cast<std::size_t>(type); };
 
@@ -159,7 +165,8 @@ void MotorController::apply_config_to_controllers() {
     accel_limiter_.set_max_acceleration(max_accel);
 }
 
-float MotorController::apply_limit_switch(float duty, uint8_t limit_sw_state) const {
+float MotorController::apply_limit_switch(float duty, uint8_t limit_sw_state) const
+{
     // 正転停止設定の確認
     bool stop_fwd  = false;
     uint8_t fwd_id = 0;
@@ -179,7 +186,8 @@ float MotorController::apply_limit_switch(float duty, uint8_t limit_sw_state) co
     return duty;
 }
 
-float MotorController::compute_feedback(int16_t count, float dt_s) {
+float MotorController::compute_feedback(int16_t count, float dt_s)
+{
     switch (config_.get_encoder_type()) {
         case gn10_can::devices::EncoderType::IncrementalSpeed:
             return encoder_.count_to_angular_velocity(count, dt_s);

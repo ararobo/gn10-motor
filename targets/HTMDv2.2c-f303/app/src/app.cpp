@@ -50,20 +50,24 @@ constexpr uint32_t LED1_BLINK_CYCLES = 100U;
  * 生成順の依存関係:
  *   can_driver_ → can_bus_ → (setup時) can_server_ → motor_
  */
-class App {
-  public:
+class App
+{
+public:
     App()
         : can_driver_(&hcan),
           can_bus_(can_driver_),
           gate_driver_(PWM_MAX_DUTY),
           encoder_(ENCODER_MAX_COUNT),
-          led1_count_(0) {}
+          led1_count_(0)
+    {
+    }
 
     /**
      * @brief ハードウェア初期化・制御系起動
      *        main() から1回だけ呼ばれる
      */
-    void setup() {
+    void setup()
+    {
         const uint8_t board_id = read_board_id();
 
         // CAN ドライバ初期化 (フィルタ設定 + 受信割り込み有効)
@@ -88,13 +92,17 @@ class App {
      * @brief CAN受信割り込みハンドラ
      *        CANBus::update() が受信フレームを各デバイスへルーティングする
      */
-    void on_can_rx(CAN_HandleTypeDef* /*hcan*/) { can_bus_.update(); }
+    void on_can_rx(CAN_HandleTypeDef* /*hcan*/)
+    {
+        can_bus_.update();
+    }
 
     /**
      * @brief タイマー割り込みハンドラ (htim6 のみ処理)
      *        毎制御周期 (1ms) に MotorController と LED を更新する
      */
-    void on_timer(TIM_HandleTypeDef* htim) {
+    void on_timer(TIM_HandleTypeDef* htim)
+    {
         if (htim->Instance != TIM6 || !motor_.has_value()) {
             return;
         }
@@ -106,13 +114,14 @@ class App {
         update_leds();
     }
 
-  private:
+private:
     /**
      * @brief DIP スイッチを読み取りボード ID を返す
      *        DIP4=bit0(LSB), DIP3=bit1, DIP2=bit2, DIP1=bit3(MSB)
      * @return uint8_t ボード ID [0-15]
      */
-    static uint8_t read_board_id() {
+    static uint8_t read_board_id()
+    {
         uint8_t id = 0;
         if (HAL_GPIO_ReadPin(DIP4_GPIO_Port, DIP4_Pin)) id |= 0b0001U;
         if (HAL_GPIO_ReadPin(DIP3_GPIO_Port, DIP3_Pin)) id |= 0b0010U;
@@ -131,7 +140,8 @@ class App {
      * | LED3 | 青 | 回転時点灯                       |
      * | LED4 | 緑 | setup() 以降常時点灯              |
      */
-    void update_leds() {
+    void update_leds()
+    {
         // LED1: 100周期ごとにトグル
         ++led1_count_;
         if (led1_count_ >= LED1_BLINK_CYCLES) {
@@ -152,11 +162,13 @@ class App {
 
         // LED2: 逆回転 (target < 0) のとき点灯
         HAL_GPIO_WritePin(
-            LED2_GPIO_Port, LED2_Pin, (target < 0.0f) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            LED2_GPIO_Port, LED2_Pin, (target < 0.0f) ? GPIO_PIN_SET : GPIO_PIN_RESET
+        );
 
         // LED3: 回転中 (target != 0) のとき点灯
         HAL_GPIO_WritePin(
-            LED3_GPIO_Port, LED3_Pin, (target != 0.0f) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            LED3_GPIO_Port, LED3_Pin, (target != 0.0f) ? GPIO_PIN_SET : GPIO_PIN_RESET
+        );
     }
 
     // --- ハードウェア層 (コンストラクタで安全に生成できる) ---
@@ -181,20 +193,24 @@ App gn10_app;
 // C エントリポイント (main.c から呼ばれる)
 // ---------------------------------------------------------------------------
 
-void setup() {
+void setup()
+{
     gn10_app.setup();
 }
 
-void loop() {
+void loop()
+{
     gn10_app.loop();
 }
 
 extern "C" {
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
+{
     gn10_app.on_can_rx(hcan);
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
     gn10_app.on_timer(htim);
 }
 }  // extern "C"

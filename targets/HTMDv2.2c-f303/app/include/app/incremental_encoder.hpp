@@ -17,8 +17,9 @@
 /**
  * @brief htim1 エンコーダモードを使用するインクリメンタルエンコーダの具象クラス
  */
-class IncrementalEncoder : public gn10_motor::IEncoder {
-  public:
+class IncrementalEncoder : public gn10_motor::IEncoder
+{
+public:
     /**
      * @brief コンストラクタ
      * @param max_count エンコーダ1回転あたりのカウント数 (分解能)
@@ -52,7 +53,7 @@ class IncrementalEncoder : public gn10_motor::IEncoder {
     /** @brief 積算角度とカウンタをリセットする */
     void reset() override;
 
-  private:
+private:
     /**
      * @brief カウント値をラジアンに変換する内部ユーティリティ
      * @param count カウント値
