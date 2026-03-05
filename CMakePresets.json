@@ -44,6 +44,15 @@
             }
         },
         {
+            "name": "2.2s-base",
+            "hidden": true,
+            "inherits": "cross-base",
+            "toolchainFile": "${sourceDir}/targets/HTMDv2.2s/cmake/gcc-arm-none-eabi.cmake",
+            "cacheVariables": {
+                "TARGET_BOARD": "2.2s"
+            }
+        },
+        {
             "name": "f303-debug",
             "inherits": "f303-base",
             "displayName": "F303 Debug",
@@ -74,6 +83,22 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "2.2s-debug",
+            "inherits": "2.2s-base",
+            "displayName": "2.2s Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "2.2s-release",
+            "inherits": "2.2s-base",
+            "displayName": "2.2s Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         }
     ],
     "buildPresets": [
@@ -92,6 +117,14 @@
         {
             "name": "g431-release",
             "configurePreset": "g431-release"
+        },
+        {
+            "name": "2.2s-debug",
+            "configurePreset": "2.2s-debug"
+        },
+        {
+            "name": "2.2s-release",
+            "configurePreset": "2.2s-release"
         }
     ]
 }
