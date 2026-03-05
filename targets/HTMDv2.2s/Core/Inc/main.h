@@ -79,12 +79,12 @@ void Error_Handler(void);
 #define SPI2_CS_GPIO_Port GPIOB
 #define LED_CAN_Pin GPIO_PIN_10
 #define LED_CAN_GPIO_Port GPIOA
-#define LED_LIM2_Pin GPIO_PIN_3
-#define LED_LIM2_GPIO_Port GPIOB
+#define LED_ERR_Pin GPIO_PIN_3
+#define LED_ERR_GPIO_Port GPIOB
 #define LIM2_Pin GPIO_PIN_5
 #define LIM2_GPIO_Port GPIOB
-#define LED_LIM1_Pin GPIO_PIN_6
-#define LED_LIM1_GPIO_Port GPIOB
+#define LED_LGC_PWR_Pin GPIO_PIN_6
+#define LED_LGC_PWR_GPIO_Port GPIOB
 #define LIM1_Pin GPIO_PIN_9
 #define LIM1_GPIO_Port GPIOB
 
