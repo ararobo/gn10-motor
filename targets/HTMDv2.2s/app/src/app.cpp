@@ -145,13 +145,13 @@ private:
         // LED1: 100周期ごとにトグル
         ++led1_count_;
         if (led1_count_ >= LED1_BLINK_CYCLES) {
-            HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+            HAL_GPIO_TogglePin(LED_LGC_PWR_GPIO_Port, LED_LGC_PWR_Pin);
             led1_count_ = 0;
         }
 
         // LED4は初期化後点灯
         if (motor_->is_initialized()) {
-            HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(LED_CAN_GPIO_Port, LED_CAN_Pin, GPIO_PIN_SET);
         }
 
         if (!motor_.has_value()) {
@@ -159,16 +159,6 @@ private:
         }
 
         const float target = motor_->get_target();
-
-        // LED2: 逆回転 (target < 0) のとき点灯
-        HAL_GPIO_WritePin(
-            LED2_GPIO_Port, LED2_Pin, (target < 0.0f) ? GPIO_PIN_SET : GPIO_PIN_RESET
-        );
-
-        // LED3: 回転中 (target != 0) のとき点灯
-        HAL_GPIO_WritePin(
-            LED3_GPIO_Port, LED3_Pin, (target != 0.0f) ? GPIO_PIN_SET : GPIO_PIN_RESET
-        );
     }
 
     // --- ハードウェア層 (コンストラクタで安全に生成できる) ---
