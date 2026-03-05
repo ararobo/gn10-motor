@@ -157,8 +157,6 @@ private:
         if (!motor_.has_value()) {
             return;
         }
-
-        const float target = motor_->get_target();
     }
 
     // --- ハードウェア層 (コンストラクタで安全に生成できる) ---
