@@ -6,6 +6,13 @@ This repository contains firmware for the [HTMDv2.2c](https://github.com/ararobo
 
 The HTMDv2.2c board supports two MCUs: STM32F303K8T6 and STM32G431K8T6. Therefore, this repository includes firmware targets for both MCUs.
 
+## Documentation
+
+| Document | Description |
+| :-: | :-: |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Development flow, commit conventions, coding rules |
+| [docs/coding-rules.md](./docs/coding-rules.md) | Detailed coding rules |
+
 ## Development Environment Setup
 
 ### Common
@@ -22,6 +29,7 @@ sudo apt install -y build-essential cmake ninja-build gcc-arm-none-eabi gdb-mult
 Install STM32CubeCLT.
 
 ## Build
+
 for STM32F303K8T6:
 ```bash
 cmake --preset f303-debug
@@ -37,22 +45,9 @@ cmake --build --preset g431-debug
 
 ![class simplified](docs/uml/motor_driver_architecture_simplified.png)
 
+## Contributing
 
-## Development Rules
-
-### 1. Naming Conventions
-Variable and function names must be self-explanatory. We follow the **Google C++ Style Guide** basics:
-- **Class/Struct names**: `PascalCase` (e.g., `SpeedMsg`, `BatteryStatus`)
-- **Function/Variable names**: `snake_case` (e.g., `get_id()`, `target_velocity`)
-- **Constants/Enum values**: `ALL_CAPS` (e.g., `BATTERY_LOW`)
-- **Private Member variables**: Must have a trailing underscore (e.g., speed_, voltage_) to distinguish them from local variables.
-
-### 2. Code Formatting
-- A `.clang-format` file is provided in the root directory. Please configure your editor to use it on save.
-
-### 3. Memory Management (No Dynamic Allocation)
-- Avoid using dynamic memory allocation (`new`, `malloc`, `std::vector`, `std::string`) inside the models.
-- Use fixed-size arrays and primitive types.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
 ## License
 This project is licensed under the Apache-2.0 - see the [LICENSE](LICENSE) file for details.
