@@ -1,8 +1,7 @@
-# HTMDv2.2FW
+# gn10-motor
 
 [English](README.md) | [日本語](README_ja.md)
 
-Gento Aiba (GN10) が開発しているモータードライバーのファームウェアです。
 このリポジトリには [HTMDv2.2c](https://github.com/ararobo/HTMDv2.2c) という基板のファームウェアが含まれています。
 
 HTMDv2.2c は STM32F303K8T6 と STM32G431K8T6 の2つの MCU に対応しているため、それぞれの MCU 用に計2つのファームウェアターゲットが存在します。

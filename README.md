@@ -1,8 +1,6 @@
-# HTMDv2.2FW
+# gn10-motor
 
 [English](README.md) | [日本語](README_ja.md)
-
-Firmware for the customized motor driver developed by Gento Aiba (GN10).
 
 This repository contains firmware for the [HTMDv2.2c](https://github.com/ararobo/HTMDv2.2c) board.
 
