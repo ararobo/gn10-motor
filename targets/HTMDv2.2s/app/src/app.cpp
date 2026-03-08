@@ -15,7 +15,8 @@
 
 #include "app/a3921_gate_driver.hpp"
 #include "app/incremental_encoder.hpp"
-#include "app/my_i2c.hpp"
+#include "app/mcp3421.hpp"
+#include "app/tmp275.hpp"
 #include "drivers/stm32_fdcan/driver_stm32_fdcan.hpp"
 #include "fdcan.h"
 #include "gn10_can/core/can_bus.hpp"
@@ -78,8 +79,9 @@ public:
         gate_driver_.hardware_init();
         encoder_.hardware_init();
 
-        // I2Cで電流センサーに電流が流れるように調整
-        my_i2c_.init();
+        // I2C センサー初期化
+        // tmp275_.init();
+        mcp3421_.init();
 
         // 実行時パラメータが必要なオブジェクトを構築
         can_server_.emplace(can_bus_, board_id);
@@ -168,7 +170,8 @@ private:
     gn10_can::CANBus can_bus_;                        ///< CAN バスルーター
     A3921GateDriver gate_driver_;                     ///< A3921 ゲートドライバ
     IncrementalEncoder encoder_;                      ///< インクリメンタルエンコーダ
-    MyI2C my_i2c_;                                    ///< 電流センサ及び温度センサ用
+    TMP275 tmp275_{hi2c1};                            ///< TMP275 温度センサ
+    MCP3421 mcp3421_{hi2c1};                          ///< MCP3421 電流センシング ADC
 
     // --- 実行時パラメータが必要なオブジェクト (setup() で emplace 構築) ---
     std::optional<gn10_can::devices::MotorDriverServer> can_server_;
