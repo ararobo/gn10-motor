@@ -1,5 +1,6 @@
 name: Release Firmware
 
+# v* タグのプッシュ時にリリースビルドを作成する (例: v1.0.0)
 on:
   push:
     tags:
@@ -19,13 +20,16 @@ jobs:
     permissions:
       contents: read
     strategy:
+      # 一つのターゲットが失敗しても他のターゲットは続行する
       fail-fast: false
+      # サポートする全ボードを並列ビルドする
       matrix:
         target: [HTMDv2.2c-f303, HTMDv2.2c-g431, HTMDv2.2s]
 
     steps:
     - uses: actions/checkout@v4
       with:
+        # 外部ライブラリ(gn10_can 等)をサブモジュールとして取得する
         submodules: recursive
 
     - name: Install Arm Toolchain
@@ -33,19 +37,22 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi ninja-build
 
+    # ビルドキャッシュ: ターゲットごとにキーを分けて他ターゲットのキャッシュと混在させない
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: release-${{ matrix.target }}
         variant: ccache
 
+    # CMakePresets.json の <target>-release プリセットを使用してコンフィグ・ビルドする
     - name: Configure CMake
       run: cmake --preset ${{ matrix.target }}-release
 
     - name: Build
       run: cmake --build --preset ${{ matrix.target }}-release
 
-    # 次のreleaseジョブに渡すため、一時的にアーティファクトとして保存する
+    # 次の release ジョブに渡すため、一時的にアーティファクトとして保存する
+    # プリセット使用時はビルド出力が build/<preset-name>/ 以下に生成されるため再帰パターンで収集する
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -56,19 +63,21 @@ jobs:
 
   release:
     name: Create Release
+    # 全ボードのビルドが成功した場合のみリリースを作成する
     needs: build
     runs-on: ubuntu-22.04
     permissions:
       contents: write
 
     steps:
-    # 全matrixジョブの成果物を一つのディレクトリにまとめて展開する
+    # 全 matrix ジョブの成果物を一つのディレクトリにまとめて展開する
     - name: Download All Firmware
       uses: actions/download-artifact@v4
       with:
         path: firmware
         merge-multiple: true
 
+    # タグのコミット差分からリリースノートを自動生成する
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
