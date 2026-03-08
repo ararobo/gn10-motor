@@ -15,6 +15,7 @@
 
 #include "app/a3921_gate_driver.hpp"
 #include "app/incremental_encoder.hpp"
+#include "app/my_i2c.hpp"
 #include "drivers/stm32_fdcan/driver_stm32_fdcan.hpp"
 #include "fdcan.h"
 #include "gn10_can/core/can_bus.hpp"
@@ -76,6 +77,9 @@ public:
         // ゲートドライバ・エンコーダ初期化
         gate_driver_.hardware_init();
         encoder_.hardware_init();
+
+        // I2Cで電流センサーに電流が流れるように調整
+        my_i2c_.init();
 
         // 実行時パラメータが必要なオブジェクトを構築
         can_server_.emplace(can_bus_, board_id);
@@ -164,6 +168,7 @@ private:
     gn10_can::CANBus can_bus_;                        ///< CAN バスルーター
     A3921GateDriver gate_driver_;                     ///< A3921 ゲートドライバ
     IncrementalEncoder encoder_;                      ///< インクリメンタルエンコーダ
+    MyI2C my_i2c_;                                    ///< 電流センサ及び温度センサ用
 
     // --- 実行時パラメータが必要なオブジェクト (setup() で emplace 構築) ---
     std::optional<gn10_can::devices::MotorDriverServer> can_server_;
