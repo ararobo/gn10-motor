@@ -106,7 +106,7 @@ private:
     // --- 状態 ---
     float target_;          ///< CAN から受け取った目標値
     float feedback_value_;  ///< エンコーダから計算したフィードバック値 [rad/s or rad]
-    bool initialized_;  ///< init パケット受信後に true になる
+    bool initialized_;      ///< init パケット受信後に true になる
 
     // --- 設定 ---
     gn10_can::devices::MotorConfig config_;
@@ -115,6 +115,9 @@ private:
     // --- タイムアウト管理 ---
     uint32_t no_target_count_;
     static constexpr uint32_t NO_TARGET_TIMEOUT_CYCLES = 100;  ///< この周期数だけ更新がなければ停止
+
+    // --- フィードバック周期用 ---
+    uint8_t feedback_cycle_count_;
 
     // --- 内部処理 ---
 
