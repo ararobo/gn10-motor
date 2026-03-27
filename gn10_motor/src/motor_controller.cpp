@@ -39,7 +39,8 @@ MotorController::MotorController(
       target_(0.0f),
       feedback_value_(0.0f),
       initialized_(false),
-      no_target_count_(0)
+      no_target_count_(0),
+      feedback_cycle_count_(0)
 {
     gains_.fill(0.0f);
 }
@@ -89,9 +90,21 @@ void MotorController::update(float dt_s, uint8_t limit_switch_state)
     // --- リミットスイッチによる出力制限 ---
     duty = apply_limit_switch(duty, limit_switch_state);
 
-    // --- モーター出力 & フィードバック送信 ---
+    // --- モーター出力 ---
     driver_.output(duty);
-    can_server_.send_feedback(feedback_value_, limit_switch_state);
+
+    // --- フィードバック送信 ---
+    uint8_t feedback_cycle = config_.get_feedback_cycle();
+    if (feedback_cycle == 0) {
+        feedback_cycle_count_ = 0;
+        return;
+    }
+
+    feedback_cycle_count_++;
+    if (feedback_cycle <= feedback_cycle_count_) {
+        feedback_cycle_count_ = 0;
+        can_server_.send_feedback(feedback_value_, limit_switch_state);
+    }
 }
 
 void MotorController::stop()
