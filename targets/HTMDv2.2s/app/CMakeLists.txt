@@ -9,8 +9,7 @@ add_library(app STATIC
     src/incremental_encoder.cpp
     src/tmp275.cpp
     src/mcp3421.cpp
-    # STM32 CAN ドライバを app 層でビルドする (HAL ヘッダを提供できるのは app 層のみ)
-    ${CMAKE_SOURCE_DIR}/external/gn10_can/drivers/stm32_fdcan/driver_stm32_fdcan.cpp
+    src/can_driver.cpp
 )
 
 target_include_directories(app PUBLIC

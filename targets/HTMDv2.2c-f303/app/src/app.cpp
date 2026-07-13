@@ -15,9 +15,9 @@
 #include <optional>
 
 #include "app/a3921_gate_driver.hpp"
+#include "app/can_driver.hpp"
 #include "app/incremental_encoder.hpp"
 #include "can.h"
-#include "drivers/stm32_can/driver_stm32_can.hpp"
 #include "gn10_can/core/can_bus.hpp"
 #include "gn10_can/devices/motor_driver_server.hpp"
 #include "gn10_motor/motor_controller.hpp"
@@ -173,10 +173,10 @@ private:
     }
 
     // --- ハードウェア層 (コンストラクタで安全に生成できる) ---
-    gn10_can::drivers::DriverSTM32CAN can_driver_;  ///< STM32 CAN ハードウェアドライバ
-    gn10_can::CANBus can_bus_;                      ///< CAN バスルーター
-    A3921GateDriver gate_driver_;                   ///< A3921 ゲートドライバ
-    IncrementalEncoder encoder_;                    ///< インクリメンタルエンコーダ
+    gn10_can::drivers::CANDriver can_driver_;  ///< STM32 CAN ハードウェアドライバ
+    gn10_can::CANBus can_bus_;                 ///< CAN バスルーター
+    A3921GateDriver gate_driver_;              ///< A3921 ゲートドライバ
+    IncrementalEncoder encoder_;               ///< インクリメンタルエンコーダ
 
     // --- 実行時パラメータが必要なオブジェクト (setup() で emplace 構築) ---
     std::optional<gn10_can::devices::MotorDriverServer> can_server_;
