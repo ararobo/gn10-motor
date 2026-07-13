@@ -50,7 +50,12 @@ bool CANDriver::send(const CANFrame& frame)
     tx_header.DLC                = frame.dlc;
     tx_header.TransmitGlobalTime = DISABLE;
 
-    while (HAL_CAN_GetTxMailboxesFreeLevel(hcan_) == 0);
+    uint32_t start_tick = HAL_GetTick();
+    while (HAL_CAN_GetTxMailboxesFreeLevel(hcan_) == 0) {
+        if (HAL_GetTick() - start_tick > TX_FIFO_TIMEOUT) {
+            return false;
+        }
+    }
 
     if (HAL_CAN_AddTxMessage(
             hcan_, &tx_header, const_cast<uint8_t*>(frame.data.data()), &tx_mailbox
