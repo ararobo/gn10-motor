@@ -53,6 +53,15 @@
             }
         },
         {
+            "name": "ikeda_MD-base",
+            "hidden": true,
+            "inherits": "cross-base",
+            "toolchainFile": "${sourceDir}/targets/ikeda_MD/cmake/gcc-arm-none-eabi.cmake",
+            "cacheVariables": {
+                "TARGET_BOARD": "ikeda"
+            }
+        },
+        {
             "name": "HTMDv2.2c-f303-debug",
             "inherits": "HTMDv2.2c-f303-base",
             "displayName": "HTMDv2.2c-f303 Debug",
@@ -99,6 +108,22 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "ikeda_MD-debug",
+            "inherits": "ikeda_MD-base",
+            "displayName": "ikeda_MD Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "ikeda_MD-release",
+            "inherits": "ikeda_MD-base",
+            "displayName": "ikeda_MD Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         }
     ],
     "buildPresets": [
@@ -125,6 +150,14 @@
         {
             "name": "HTMDv2.2s-release",
             "configurePreset": "HTMDv2.2s-release"
+        },
+        {
+            "name": "ikeda_MD-debug",
+            "configurePreset": "ikeda_MD-debug"
+        },
+        {
+            "name": "ikeda_MD-release",
+            "configurePreset": "ikeda_MD-release"
         }
     ]
 }

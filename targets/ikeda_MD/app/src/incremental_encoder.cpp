@@ -1,15 +1,3 @@
-/**
- * @file incremental_encoder.cpp
- * @author Gento Aiba (aiba-gento)
- * @author Watanabe-Koichiro
- * @brief インクリメンタルエンコーダの具象クラス
- * @version 0.2.0
- * @date 2026-02-23
- *
- * @copyright Copyright (c) 2026 ararobo
- * SPDX-License-Identifier: Apache-2.0
- *
- */
 #include "app/incremental_encoder.hpp"
 
 #include <cmath>
