@@ -19,18 +19,25 @@ void IR2302GateDriver::hardware_init()
 
 void IR2302GateDriver::output(float output)
 {
-    output = std::clamp(output, -1.0f, 1.0f) * static_cast<float>(max_duty_);
+    output        = std::clamp(output, -1.0f, 1.0f) * static_cast<float>(max_duty_);
+    uint32_t duty = static_cast<uint32_t>(std::abs(output));
 
     if (output < 0.0f) {
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, static_cast<uint32_t>(output));
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty);
         __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
     } else {
         __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, static_cast<uint32_t>(-output));
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, duty);
     }
 }
 
 void IR2302GateDriver::set_brake(bool brake)
 {
-    /**/
+    if (brake) {
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, max_duty_);
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, max_duty_);
+    } else {
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
+    }
 }
