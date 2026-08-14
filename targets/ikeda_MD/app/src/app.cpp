@@ -109,7 +109,13 @@ public:
         }
 
         // リミットスイッチ状態取得 (bit0 = LIM1)
-        const uint8_t limit_sw = HAL_GPIO_ReadPin(LIM1_GPIO_Port, LIM1_Pin) ? 1U : 0U;
+        uint8_t limit_sw = 0U;
+        if (HAL_GPIO_ReadPin(LIM1_GPIO_Port, LIM1_Pin) == GPIO_PIN_SET) {
+            limit_sw |= 1U;
+        }
+        if (HAL_GPIO_ReadPin(LIM2_GPIO_Port, LIM2_Pin) == GPIO_PIN_SET) {
+            limit_sw |= (1U << 1);
+        }
 
         motor_->update(CONTROL_DT_S, limit_sw);
         update_leds();
