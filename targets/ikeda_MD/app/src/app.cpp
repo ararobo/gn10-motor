@@ -1,14 +1,3 @@
-/**
- * @file app.cpp
- * @author Gento Aiba (aiba-gento)
- * @brief アプリケーションの実装
- * @version 0.2.0
- * @date 2026-02-23
- *
- * @copyright Copyright (c) 2026 ararobo
- * SPDX-License-Identifier: Apache-2.0
- *
- */
 #include "app/app.hpp"
 
 #include <cstdint>
