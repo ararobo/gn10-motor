@@ -23,11 +23,11 @@ void IR2302GateDriver::output(float output)
     uint16_t duty = static_cast<uint16_t>(std::abs(output));
 
     if (output >= 0.0f) {
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty);
-        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
-    } else {
         __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);
         __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, duty);
+    } else {
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty);
+        __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 0);
     }
 }
 
