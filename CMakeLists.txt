@@ -17,6 +17,7 @@ set(BUILD_FOR_ROS2 OFF CACHE BOOL "Force disable ROS2 build for embedded" FORCE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(external/gn10_can)
+add_subdirectory(external/gn10-stm32-fdcan-driver)
 add_subdirectory(gn10_motor)
 
 if(TARGET_BOARD STREQUAL "f303")
