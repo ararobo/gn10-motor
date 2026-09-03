@@ -9,7 +9,6 @@ add_library(app STATIC
     src/incremental_encoder.cpp
     src/tmp275.cpp
     src/mcp3421.cpp
-    src/can_driver.cpp
 )
 
 target_include_directories(app PUBLIC

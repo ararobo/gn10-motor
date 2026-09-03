@@ -17,6 +17,6 @@ target_link_libraries(app PRIVATE
     stm32cubemx
     gn10_can
     gn10_motor
-    gn10_stm32_fdcan_driver
+    gn10_stm32_can_driver
 )
 
