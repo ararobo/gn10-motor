@@ -20,6 +20,7 @@
 #include "gn10_can/core/can_bus.hpp"
 #include "gn10_can/devices/motor_driver_server.hpp"
 #include "gn10_motor/motor_controller.hpp"
+#include "gn10_stm32_fdcan_driver/can_callback_helper.hpp"
 #include "gn10_stm32_fdcan_driver/can_driver.hpp"
 #include "gpio.h"
 #include "tim.h"
@@ -93,9 +94,9 @@ public:
      * @brief CAN受信割り込みハンドラ
      *        CANBus::update() が受信フレームを各デバイスへルーティングする
      */
-    void on_can_rx(FDCAN_HandleTypeDef* /*hfdcan*/)
+    void on_can_rx(FDCAN_HandleTypeDef* hfdcan)
     {
-        can_bus_.update();
+        process_fdcan_fifo(hfdcan, &hfdcan1, can_bus_, FDCAN_RX_FIFO0);
     }
 
     /**
