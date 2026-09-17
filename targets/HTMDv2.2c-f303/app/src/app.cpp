@@ -15,12 +15,13 @@
 #include <optional>
 
 #include "app/a3921_gate_driver.hpp"
-#include "app/can_driver.hpp"
 #include "app/incremental_encoder.hpp"
 #include "can.h"
 #include "gn10_can/core/can_bus.hpp"
 #include "gn10_can/devices/motor_driver_server.hpp"
 #include "gn10_motor/motor_controller.hpp"
+#include "gn10_stm32_can_driver/can_callback_helper.hpp"
+#include "gn10_stm32_can_driver/can_driver.hpp"
 #include "gpio.h"
 #include "tim.h"
 
@@ -93,9 +94,9 @@ public:
      * @brief CAN受信割り込みハンドラ
      *        CANBus::update() が受信フレームを各デバイスへルーティングする
      */
-    void on_can_rx(CAN_HandleTypeDef* /*hcan*/)
+    void on_can_rx(CAN_HandleTypeDef* hcan_)
     {
-        can_bus_.update();
+        process_can_fifo(hcan_, &hcan, can_bus_, CAN_RX_FIFO0);
     }
 
     /**
@@ -205,9 +206,9 @@ void loop()
 }
 
 extern "C" {
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan_)
 {
-    gn10_app.on_can_rx(hcan);
+    gn10_app.on_can_rx(hcan_);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
