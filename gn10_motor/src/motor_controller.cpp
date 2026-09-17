@@ -26,6 +26,9 @@ static constexpr float ACCEL_NO_LIMIT = FLT_MAX;
 // PID積分項の最大値: 出力正規化空間 [-1, 1] の 30%
 static constexpr float DEFAULT_INTEGRAL_LIMIT = 0.3f;
 
+float output = 0.0f;
+bool up      = true;
+
 // -----------------------------------------------------------------------
 
 MotorController::MotorController(
@@ -49,62 +52,20 @@ MotorController::MotorController(
 
 void MotorController::update(float dt_s, uint8_t limit_switch_state)
 {
-    // CAN受信を polling して設定・ゲイン・目標値を更新
-    poll_can();
-
-    // init パケット受信前は制御を行わない
-    if (!initialized_) {
-        return;
-    }
-
-    // --- タイムアウト処理: 長時間目標値が更新されなければ停止 ---
-    if (no_target_count_ >= NO_TARGET_TIMEOUT_CYCLES) {
-        stop();
-        return;
-    }
-
-    // --- エンコーダ読み取り & フィードバック値計算 ---
-    const int16_t count = encoder_.read_and_reset_count();
-    feedback_value_     = compute_feedback(count, dt_s);
-
-    // --- 制御演算: エンコーダありなら PID、なしならオープンループ ---
-    float duty          = 0.0f;
-    const auto enc_type = config_.get_encoder_type();
-    const bool use_pid =
-        (enc_type != gn10_can::devices::EncoderType::None) &&
-        (gains_[static_cast<std::size_t>(gn10_can::devices::GainType::Kp)] != 0.0f);
-    if (use_pid) {
-        duty = pid_.update(target_, feedback_value_, dt_s);
-    } else {
-        // オープンループ: target_ をそのままデューティ [-1.0, 1.0] として扱う
-        duty = target_;
-    }
-
-    // --- max_duty_ratio による出力制限 ---
-    const float max_duty = config_.get_max_duty_ratio();
-    duty                 = std::clamp(duty, -max_duty, max_duty);
-
-    // --- 加速度制限 (台形制御) ---
-    duty = accel_limiter_.update(duty, dt_s);
-
-    // --- リミットスイッチによる出力制限 ---
-    duty = apply_limit_switch(duty, limit_switch_state);
-
     // --- モーター出力 ---
-    driver_.output(duty);
-
-    // --- フィードバック送信 ---
-    uint8_t feedback_cycle = config_.get_feedback_cycle();
-    if (feedback_cycle == 0) {
-        feedback_cycle_count_ = 0;
-        return;
+    if (up) {
+        if (output > 1.0f) {
+            up = false;
+        }
+        output += 0.001;
+    } else {
+        if (output < -1.0f) {
+            up = true;
+        }
+        output -= 0.001f;
     }
 
-    feedback_cycle_count_++;
-    if (feedback_cycle <= feedback_cycle_count_) {
-        feedback_cycle_count_ = 0;
-        can_server_.send_feedback(feedback_value_, limit_switch_state);
-    }
+    driver_.output(output);
 }
 
 void MotorController::stop()
