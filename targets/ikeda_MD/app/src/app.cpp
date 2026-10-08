@@ -1,3 +1,14 @@
+/**
+ * @file app.cpp
+ * @author Gento Aiba (aiba-gento)
+ * @brief アプリケーションの実装
+ * @version 0.2.0
+ * @date 2026-02-23
+ *
+ * @copyright Copyright (c) 2026 ararobo
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
 #include "app/app.hpp"
 
 #include <cstdint>
@@ -6,10 +17,11 @@
 #include "app/incremental_encoder.hpp"
 #include "app/ir2302_gate_driver.hpp"
 #include "can.h"
-#include "drivers/stm32_can/driver_stm32_can.hpp"
 #include "gn10_can/core/can_bus.hpp"
 #include "gn10_can/devices/motor_driver_server.hpp"
 #include "gn10_motor/motor_controller.hpp"
+#include "gn10_stm32_can_driver/can_callback_helper.hpp"
+#include "gn10_stm32_can_driver/can_driver.hpp"
 #include "gpio.h"
 #include "tim.h"
 
@@ -82,9 +94,9 @@ public:
      * @brief CAN受信割り込みハンドラ
      *        CANBus::update() が受信フレームを各デバイスへルーティングする
      */
-    void on_can_rx(CAN_HandleTypeDef* /*hcan*/)
+    void on_can_rx(CAN_HandleTypeDef* hcan_)
     {
-        can_bus_.update();
+        process_can_fifo(hcan_, &hcan, can_bus_, CAN_RX_FIFO0);
     }
 
     /**
@@ -168,10 +180,10 @@ private:
     }
 
     // --- ハードウェア層 (コンストラクタで安全に生成できる) ---
-    gn10_can::drivers::DriverSTM32CAN can_driver_;  ///< STM32 CAN ハードウェアドライバ
-    gn10_can::CANBus can_bus_;                      ///< CAN バスルーター
-    IR2302GateDriver gate_driver_;                  ///< A3921 ゲートドライバ
-    IncrementalEncoder encoder_;                    ///< インクリメンタルエンコーダ
+    gn10_can::drivers::CANDriver can_driver_;  ///< STM32 CAN ハードウェアドライバ
+    gn10_can::CANBus can_bus_;                 ///< CAN バスルーター
+    IR2302GateDriver gate_driver_;             ///< IR2302 ゲートドライバ
+    IncrementalEncoder encoder_;               ///< インクリメンタルエンコーダ
 
     // --- 実行時パラメータが必要なオブジェクト (setup() で emplace 構築) ---
     std::optional<gn10_can::devices::MotorDriverServer> can_server_;
@@ -200,9 +212,9 @@ void loop()
 }
 
 extern "C" {
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan_)
 {
-    gn10_app.on_can_rx(hcan);
+    gn10_app.on_can_rx(hcan_);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
