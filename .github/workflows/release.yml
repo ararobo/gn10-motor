@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       # サポートする全ボードを並列ビルドする
       matrix:
-        target: [HTMDv2.2c-f303, HTMDv2.2c-g431, HTMDv2.2s]
+        target: [HTMDv2.2c-f303, HTMDv2.2c-g431, HTMDv2.2s, ikeda_MD]
 
     steps:
     - uses: actions/checkout@v4
