@@ -15,10 +15,10 @@
 #include <optional>
 
 #include "app/a3921_gate_driver.hpp"
+#include "app/can_driver.hpp"
 #include "app/incremental_encoder.hpp"
 #include "app/mcp3421.hpp"
 #include "app/tmp275.hpp"
-#include "drivers/stm32_fdcan/driver_stm32_fdcan.hpp"
 #include "fdcan.h"
 #include "gn10_can/core/can_bus.hpp"
 #include "gn10_can/devices/motor_driver_server.hpp"
@@ -167,12 +167,12 @@ private:
     }
 
     // --- ハードウェア層 (コンストラクタで安全に生成できる) ---
-    gn10_can::drivers::DriverSTM32FDCAN can_driver_;  ///< STM32 CAN ハードウェアドライバ
-    gn10_can::CANBus can_bus_;                        ///< CAN バスルーター
-    A3921GateDriver gate_driver_;                     ///< A3921 ゲートドライバ
-    IncrementalEncoder encoder_;                      ///< インクリメンタルエンコーダ
-    TMP275 tmp275_{hi2c1};                            ///< TMP275 温度センサ
-    MCP3421 mcp3421_{hi2c1};                          ///< MCP3421 電流センシング ADC
+    gn10_can::drivers::CANDriver can_driver_;  ///< STM32 CAN ハードウェアドライバ
+    gn10_can::CANBus can_bus_;                 ///< CAN バスルーター
+    A3921GateDriver gate_driver_;              ///< A3921 ゲートドライバ
+    IncrementalEncoder encoder_;               ///< インクリメンタルエンコーダ
+    TMP275 tmp275_{hi2c1};                     ///< TMP275 温度センサ
+    MCP3421 mcp3421_{hi2c1};                   ///< MCP3421 電流センシング ADC
 
     // --- 実行時パラメータが必要なオブジェクト (setup() で emplace 構築) ---
     std::optional<gn10_can::devices::MotorDriverServer> can_server_;
