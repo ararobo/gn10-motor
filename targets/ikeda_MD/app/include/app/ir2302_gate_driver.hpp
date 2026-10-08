@@ -36,4 +36,10 @@ public:
 
 private:
     uint16_t max_duty_;  ///< PWMタイマーの最大デューティ値
+    bool brake_;         // ブレーキフラグ
+
+    struct MotorDuty {
+        uint16_t ch1;
+        uint16_t ch2;
+    };
 };
